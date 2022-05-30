@@ -1262,6 +1262,8 @@ int main(int argc, char* argv[]) {
 
 	//Not finish, you can write your own 3d plot!!
 	HHSA_gr.Clf();
+	HHSA_gr.Title("Holo-Hilbert");
+	HHSA_gr.Title("Spetra Analysis");
 	HHSA_gr.SetRange('c',HHSA_min,log(HHSA_max));
 	HHSA_gr.SetFunc("","","","lg(c)");
 	//HHSA_gr.Alpha(true);
