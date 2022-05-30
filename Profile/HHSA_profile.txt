@@ -1,0 +1,27 @@
+10
+32
+0.01
+0.0051724842183439
+1000
+500
+500
+3840
+2160
+2160
+2160
+
+
+Default:
+Mode=10				//Mode Number of Intrinsic Mode Function (IMF)
+Ensemble=32			//Ensemble Number of EMD  (CEEMD run Ensemble*2 times, EEMD run Ensemble times)
+TargetSTDEV=0.01		//Stop Criteria
+dt=0.0051724842183439		//Sensor period, (1.0/SampleRate)
+Time_cell=1000			//Time
+Freq_cell=500			//Frequency == FM Frequency
+Holo_Freq_cell=500		//AM Frequency
+ImageSizeX1=3840		//HSA Time
+ImageSizeY1=2160		//HSA Frequency
+ImageSizeX2=2160		//HHS FM frequency
+ImageSizeY2=2160		//HHS AM frequency
+
+
