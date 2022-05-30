@@ -62,9 +62,9 @@
 - (INPUT)_HHSA_3D.png is the Holo-Hilbert Spectra Analysis result which is a short time HHS according to TimeCell Duration along Time
 
 ### Linux
-- Debian/Ubuntu: "apt-get install libmgl-dev g++"
+- Debian/Ubuntu: "apt-get install libmgl-dev g++ make"
 
-- CentOS: "yum install mathgl-devel g++"
+- CentOS: "yum install mathgl-devel gcc-c++ make" (I don't really test it, jsut copy paste)
 
 - cd to HHSA_CPU_OpenMP folder which contain Makefile: "make"
 
