@@ -1144,12 +1144,14 @@ int main(int argc, char* argv[]) {
 
 	printf("\n\n");
 
-	printf("Generate HHSA result  ");
+	printf("Generate HHSA 3D result  ");
 
 	//Gnenerate HHSA detail
 	HHSA_sum = 0.0;
 	HHSA_max = -1000000000000.0;
 	HHSA_min = 1000000000000.0;
+	int HHSA_length = 0;
+	float HHSA_threshold = 1.0;
 	for (int k = 0, l = 0; k < Time_cell; ++k) {
 		for (int j = 0; j < Freq_cell; ++j) {
 			for (int i = 0; i < Holo_Freq_cell; ++i) {
@@ -1158,9 +1160,13 @@ int main(int argc, char* argv[]) {
 				HHSA_sum += hhsa_map[k][j][i];					//[FM][AM]
 				if (hhsa_map[k][j][i] > HHSA_max) HHSA_max = hhsa_map[k][j][i];
 				if (hhsa_map[k][j][i] < HHSA_min) HHSA_min = hhsa_map[k][j][i];
+				if (hhsa_map[k][j][i] > HHSA_threshold) HHSA_length += 1;
 			}
 		}
 	}
+
+	printf("HHSA_3D_dot_length=%d\n", HHSA_length);
+
 	HHSA_avg = HHSA_sum / (float)(Time_cell * Freq_cell * Holo_Freq_cell);
 	HHSA_stdev = STDEV(HHSA_raw, Time_cell * Freq_cell * Holo_Freq_cell);
 	HHSA_dt = HSA_dt; 	//=max_time/Time_cell;
@@ -1182,17 +1188,18 @@ int main(int argc, char* argv[]) {
 	fprintf(fp, "HHSA_max=%f\nHHSA_min=%f\n", HHSA_max, HHSA_min);
 	fclose(fp);
 
+	/*
 	//output HHSA to png
 	for (int k = 0; k < Time_cell; ++k) {
 
-		/*
+		
 		//Initial HHSA gr map
-		for(int j=0;j<Freq_cell;++j){
-			for(int i=0;i<Holo_Freq_cell;++i){
-				HHSA_map[i*Freq_cell+j]=0.0;
-			}
-		}
-		*/
+		//for(int j=0;j<Freq_cell;++j){
+		//	for(int i=0;i<Holo_Freq_cell;++i){
+		//		HHSA_map[i*Freq_cell+j]=0.0;
+		//	}
+		//}
+		
 
 		//Graph of a time cell
 		for (int j = 0; j < Freq_cell; ++j) {
@@ -1226,30 +1233,61 @@ int main(int argc, char* argv[]) {
 		HHSA_gr.Axis();
 		HHSA_gr.WriteFrame(OutputFileName);
 	}
+	*/
 
+	//mglData HHSA_3D_map(Time_cell, Freq_cell, Holo_Freq_cell);
+	mglData HHSA_3D_x(HHSA_length), HHSA_3D_y(HHSA_length), HHSA_3D_z(HHSA_length), HHSA_3D_a(HHSA_length);
+	
+	int index = 0;
+	for (int k = 0; k < Time_cell; ++k) {
+		for (int j = 0; j < Freq_cell; ++j) {
+			for (int i = 0; i < Holo_Freq_cell; ++i) {
+				if (hhsa_map[k][j][i] > 1000000000000.0 || hhsa_map[k][j][i] < -1000000000000.0) continue;
+				//HHSA_3D_map[ k * Freq_cell* Holo_Freq_cell + j* Holo_Freq_cell + i] = hhsa_map[k][j][i] + 0.00000001;
+				if (hhsa_map[k][j][i] > HHSA_threshold) {
+					HHSA_3D_x[index] = k;
+					HHSA_3D_y[index] = j;
+					HHSA_3D_z[index] = i;
+					HHSA_3D_a[index++] = hhsa_map[k][j][i];
+				}
+			}
+		}
+	}
 
-	//sprintf(OutputFileName,"%s_HHSA_3D.png",InputFileName);
+	
 
-	/* Not finish, you can write your own 3d plot!!
+	sprintf(OutputFileName,"%s_HHSA_3D.png",InputFileName);
+
+	//printf("Generate HHSA 3D\n");
+
+	//Not finish, you can write your own 3d plot!!
+	HHSA_gr.Clf();
 	HHSA_gr.SetRange('c',HHSA_min,log(HHSA_max));
 	HHSA_gr.SetFunc("","","","lg(c)");
 	//HHSA_gr.Alpha(true);
 	//HHSA_gr.SetAlphaDef(0.7);
-	HHSA_gr.Rotate(-50,60);
-	HHSA_gr.SetRange('x',0.0,max_time);
-	HHSA_gr.SetRange('y',0.0,max_FM_frequency);
-	HHSA_gr.SetRange('z',0.0,max_AM_frequency);
-	HHSA_gr.Box();
-	HHSA_gr.SetOrigin(max_time/2.0,max_FM_frequency/2.0,max_AM_frequency/2.0);
-	HHSA_gr.Dens3(HHSA_map,"x");
+	//HHSA_gr.SetRange('x',0.0,max_time);
+	//HHSA_gr.SetRange('y',0.0,max_FM_frequency);
+	//HHSA_gr.SetRange('z',0.0,max_AM_frequency);
+	HHSA_gr.SetRange('x',0.0, Time_cell);
+	HHSA_gr.SetRange('y',0.0, Freq_cell);
+	HHSA_gr.SetRange('z',0.0, Holo_Freq_cell);
+	//HHSA_gr.Label('x',"Time",0.0);
+	//HHSA_gr.Label('y',"FM Frequency",0.0);
+	//HHSA_gr.Label('z',"AM Frequency",0.0);
+	HHSA_gr.Rotate(45, 0, 45);
+	//HHSA_gr.Box();
+	//HHSA_gr.SetOrigin(max_time/2.0,max_FM_frequency/2.0,max_AM_frequency/2.0);
+	HHSA_gr.Dots(HHSA_3D_x, HHSA_3D_y, HHSA_3D_z, HHSA_3D_a);
 	HHSA_gr.Colorbar(">");
-	HHSA_gr.Puts(mglPoint(1.35,1.2),"log-scale\n(10^n)");
+	HHSA_gr.Puts(mglPoint(Time_cell, Freq_cell*1.3, 0),"log-scale\n(10^n)");
+	HHSA_gr.Puts(mglPoint(Time_cell*0.5, 0, -Holo_Freq_cell*0.25), "Time");
+	HHSA_gr.Puts(mglPoint(0, Freq_cell*0.5, Holo_Freq_cell*1.25), "FMfreq");
+	HHSA_gr.Puts(mglPoint(-Time_cell * 0.25, 0, Holo_Freq_cell * 0.5), "AMfreq");
 	HHSA_gr.Axis();
-	HHSA_gr.Label('x',"Time",0);
-	HHSA_gr.Label('y',"FM Frequency",0);
-	HHSA_gr.Label('z',"AM Frequency",0);
+
 	HHSA_gr.WriteFrame(OutputFileName);
-	*/
+	
 
 	printf("\n\n");
 

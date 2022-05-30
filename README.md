@@ -59,7 +59,7 @@
 
 - (INPUT)_HHS.png is the Holo-Hilbert Spectra that plot the AM Frequency and FM Frequency by HHSA result (Sum of all time)
 
-- (INPUT)_HHSA_TimeCell(NUM).png is the Holo-Hilbert Spectra Analysis result which is a short time HHS (Sum of TimeCell Duration)
+- (INPUT)_HHSA_3D.png is the Holo-Hilbert Spectra Analysis result which is a short time HHS according to TimeCell Duration along Time
 
 ### Notice
 - This code is done in my spare time. Not verified by third party.
