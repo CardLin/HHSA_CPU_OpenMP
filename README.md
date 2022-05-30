@@ -61,5 +61,15 @@
 
 - (INPUT)_HHSA_3D.png is the Holo-Hilbert Spectra Analysis result which is a short time HHS according to TimeCell Duration along Time
 
+### Linux
+- Debian/Ubuntu: "apt-get install libmgl-dev g++"
+
+- CentOS: "yum install mathgl-devel g++"
+
+- cd to HHSA_CPU_OpenMP folder which contain Makefile: "make"
+
+- "./HHSA_CPU_OpenMP HeartRate.txt"
+
+
 ### Notice
 - This code is done in my spare time. Not verified by third party.
